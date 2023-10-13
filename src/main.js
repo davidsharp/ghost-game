@@ -4,7 +4,7 @@ const TIMER = 2000
 
 export default function main(canvas){
   const state = {
-    isPlaying: true,
+    isPlaying: false,
     score: 0,
     hiscore: 0,
     shots: 0,
@@ -17,6 +17,8 @@ export default function main(canvas){
       //{x:400,y:300,tick:5}
     ],
     disabledClick: false,
+    firstPlay: true,
+    menuWobble: 0,
   }
 
   window.state=state
@@ -31,7 +33,10 @@ export default function main(canvas){
   const GHOST_WIDTH = ctx.measureText(GHOST).width
 
   function tick() {
-    if(!state.isPlaying) return
+    if(!state.isPlaying) {
+      state.menuWobble++
+      return
+    }
     state.timer--
     if(state.timer<=0) gameover()
     state.ghosts.forEach(g=>{
@@ -49,28 +54,41 @@ export default function main(canvas){
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
 
     if(!state.isPlaying){
-      let txt = 'High Score: '+state.hiscore
+      ctx.font = '80px "Boned"'
+      let txt = 'Bust-a-Ghost'
       let x = (WIDTH/2) - (ctx.measureText(txt).width/2)
       ctx.fillStyle = 'black'
-      ctx.fillText(txt,x+5,230+5)
+      ctx.fillText(txt,x+5,150+5+(Math.sin(state.menuWobble/7)*5))
+      txt = '👻 Bust-a-Ghost 👻'
+      x = (WIDTH/2) - (ctx.measureText(txt).width/2)
       ctx.fillStyle = 'white'
-      ctx.fillText(txt,x,230)
+      ctx.fillText(txt,x,150+(Math.sin(state.menuWobble/7)*5))
 
-      txt = 'Score: '+state.score
+      ctx.font = '60px "Boned"'
+      txt = 'High Score: '+state.hiscore
       x = (WIDTH/2) - (ctx.measureText(txt).width/2)
       ctx.fillStyle = 'black'
-      ctx.fillText(txt,x+5,300+5)
+      ctx.fillText(txt,x+5,(state.firstPlay?350:230)+5)
       ctx.fillStyle = 'white'
-      ctx.fillText(txt,x,300)
+      ctx.fillText(txt,x,(state.firstPlay?350:230))
 
-      txt = 'Accuracy: '+Math.floor((state.hits/state.shots)*100)
-      x = (WIDTH/2) - (ctx.measureText(txt).width/2)
-      ctx.fillStyle = 'black'
-      ctx.fillText(txt,x+5,370+5)
-      ctx.fillStyle = 'white'
-      ctx.fillText(txt,x,370)
+      if(!state.firstPlay){
+        txt = 'Score: '+state.score
+        x = (WIDTH/2) - (ctx.measureText(txt).width/2)
+        ctx.fillStyle = 'black'
+        ctx.fillText(txt,x+5,300+5)
+        ctx.fillStyle = 'white'
+        ctx.fillText(txt,x,300)
+  
+        txt = 'Accuracy: '+Math.floor((state.hits/state.shots)*100)
+        x = (WIDTH/2) - (ctx.measureText(txt).width/2)
+        ctx.fillStyle = 'black'
+        ctx.fillText(txt,x+5,370+5)
+        ctx.fillStyle = 'white'
+        ctx.fillText(txt,x,370)
+      }
 
-      txt = 'click to play again'
+      txt = state.firstPlay?'click to start':'click to play again'
       x = (WIDTH/2) - (ctx.measureText(txt).width/2)
       ctx.fillStyle = 'black'
       ctx.fillText(txt,x+5,470+5)
@@ -177,6 +195,7 @@ export default function main(canvas){
     state.bullets = []
     state.hits = 0
     state.shots = 0
+    state.firstPlay = false
 
     // first ghost for next game
     spawn()
@@ -184,6 +203,5 @@ export default function main(canvas){
     state.isPlaying = true
   }
 
-  spawn()
   state.hiscore = localStorage.getItem("hiscore") || 0
 }
