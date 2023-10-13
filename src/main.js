@@ -16,6 +16,7 @@ export default function main(canvas){
     bullets: [
       //{x:400,y:300,tick:5}
     ],
+    disabledClick: false,
   }
 
   window.state=state
@@ -68,6 +69,13 @@ export default function main(canvas){
       ctx.fillText(txt,x+5,370+5)
       ctx.fillStyle = 'white'
       ctx.fillText(txt,x,370)
+
+      txt = 'click to play again'
+      x = (WIDTH/2) - (ctx.measureText(txt).width/2)
+      ctx.fillStyle = 'black'
+      ctx.fillText(txt,x+5,470+5)
+      ctx.fillStyle = 'white'
+      ctx.fillText(txt,x,470)
     }
 
     else{
@@ -110,8 +118,7 @@ export default function main(canvas){
 
   canvas.addEventListener('click', function(event) {
     if(!state.isPlaying){
-      // handle menu stuff here
-      reset()
+      if(!state.disabledClick)reset()
       return
     }
     var rect = canvas.getBoundingClientRect();
@@ -155,7 +162,10 @@ export default function main(canvas){
 
   function gameover(){
     state.isPlaying = false
+    state.disabledClick = true
     state.hiscore = Math.max(state.hiscore,state.score)
+
+    setTimeout(()=>state.disabledClick=false,1000)
 
     localStorage.setItem("hiscore", state.hiscore)
   }
