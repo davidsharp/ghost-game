@@ -3,19 +3,13 @@ const HEIGHT = 600
 
 export default function main(canvas){
   const state = {
-    screen: null,
-    elements: [],
-    frame: 0,
-    innerX: 5,
-    innerY: 80,
-    settings: {},
+    score: 0,
     ghosts: [
       //{x:400,y:300}
     ],
     bullets: [
       //{x:400,y:300,tick:5}
     ],
-    mouse: {x:0,y:0}
   }
 
   window.state=state
@@ -34,7 +28,7 @@ export default function main(canvas){
       g.y -= 2
       g.tick++
       g.x += (Math.sin(g.tick/10)*3)
-      if (g.y < 0) g.dead = true //g.y = 800
+      if (g.y < 0) g.dead = true
     })
     state.ghosts = state.ghosts.filter(g=>!g.dead)
 
@@ -62,22 +56,15 @@ export default function main(canvas){
       }
     )
 
-    /*ctx.strokeStyle = 'yellow'
-    ctx.beginPath();
-    ctx.arc(state.mouse.x, state.mouse.y, 30, 0, 2 * Math.PI);
-    ctx.stroke();*/
+    let txt = 'Score: '+state.score
+    ctx.fillStyle = 'black'
+    ctx.fillText(txt,20 + 5,600 - 45)
+    ctx.fillStyle = 'white'
+    ctx.fillText(txt,20,600 - 50)
 
     requestAnimationFrame(draw);
   }
   requestAnimationFrame(draw);
-
-  /*canvas.addEventListener('mousemove', function(event) {
-    var rect = canvas.getBoundingClientRect();
-    var x = event.pageX - rect.left,
-        y = event.pageY - rect.top;
-
-    state.mouse = {x,y}
-  })*/
 
   canvas.addEventListener('click', function(event) {
     var rect = canvas.getBoundingClientRect();
@@ -98,6 +85,7 @@ export default function main(canvas){
       if (dist<40) {
           //alert('clicked an element');
           ghost.dead = true
+          state.score++
       }
     });
 
