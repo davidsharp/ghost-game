@@ -5,6 +5,7 @@
   "author": "davidsharp <hello@davidsharp.codes>",
   "license": "MIT",
   "scripts": {
+    "start": "parcel index.html -p 3000",
     "dev": "parcel index.html",
     "build": "rm -rf ./dist/ && parcel build --no-source-maps --public-url ./ index.html && zip -r ./dist/ghost-game ./dist"
   },

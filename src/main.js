@@ -134,7 +134,7 @@ export default function main(canvas){
   }
   requestAnimationFrame(draw);
 
-  canvas.addEventListener('click', function(event) {
+  canvas.addEventListener('mousedown', function(event) {
     if(!state.isPlaying){
       if(!state.disabledClick)reset()
       return
