@@ -41,7 +41,6 @@ export default function main(canvas){
     state.bullets = state.bullets.filter(b=>b.tick>0)
   }
   function draw() {
-    tick()
     state.frame++
 
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
@@ -112,5 +111,7 @@ export default function main(canvas){
     )
   }
   setInterval(spawn,1200)
+  setInterval(tick, 1000/60)
+
   spawn()
 }
