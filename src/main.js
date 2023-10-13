@@ -28,7 +28,9 @@ export default function main(canvas){
   const GHOST_WIDTH = ctx.measureText(GHOST).width
 
   function tick() {
-    state.timer -= 0.5
+    if(!state.isPlaying) return
+    state.timer--
+    if(state.timer<=0) gameover()
     state.ghosts.forEach(g=>{
       g.y -= 2
       g.tick++
@@ -41,9 +43,19 @@ export default function main(canvas){
     state.bullets = state.bullets.filter(b=>b.tick>0)
   }
   function draw() {
-    state.frame++
-
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
+
+    if(!state.isPlaying){
+      // handle menu stuff here
+      let txt = 'High Score: '+state.hiscore
+      let x = (WIDTH/2) - (ctx.measureText(txt).width/2)
+      ctx.fillStyle = 'black'
+      ctx.fillText(txt,x+5,300+5)
+      ctx.fillStyle = 'white'
+      ctx.fillText(txt,x,300)
+
+      requestAnimationFrame(draw);
+    }
 
     state.ghosts.forEach(
       ghost => {
@@ -68,7 +80,7 @@ export default function main(canvas){
 
     ctx.fillStyle = state.timer > (TIMER/5) ? 'white' : 'red'
     ctx.beginPath();
-    ctx.arc(800-100, 100, 50, (2 * Math.PI-(2 * Math.PI * state.timer)/TIMER)-Math.PI/2, 0-(Math.PI/2));
+    ctx.arc(800-100, 100, 50, (2 * Math.PI-(2 * Math.PI * Math.max(0.1,state.timer))/TIMER)-Math.PI/2, 0-(Math.PI/2));
     ctx.lineTo(800-100, 100)
     ctx.fill();
 
@@ -77,11 +89,14 @@ export default function main(canvas){
   requestAnimationFrame(draw);
 
   canvas.addEventListener('click', function(event) {
+    if(!state.isPlaying){
+      // handle menu stuff here
+      state.isPlaying = true
+      return
+    }
     var rect = canvas.getBoundingClientRect();
     var x = event.pageX - rect.left,
         y = event.pageY - rect.top;
-
-        console.log(x,y)
 
     state.bullets.push({x,y,tick:5})
 
@@ -91,27 +106,41 @@ export default function main(canvas){
         ((ghost.x-x) ** 2) +
         ((ghost.y-y) ** 2)
       )
-      console.log(dist)
       if (dist<40) {
-          //alert('clicked an element');
-          ghost.dead = true
-          state.score++
+        ghost.dead = true
+        state.score++
       }
     });
 
 }, false);
 
   function spawn(){
-    state.ghosts.push(
-      {
-        y: 700,
-        tick: (Math.random()*5),
-        x: (Math.random()*700)+50
-      }
-    )
+    if(state.isPlaying)
+      state.ghosts.push(
+        {
+          x: (Math.random()*700)+50,
+          y: 700,
+          tick: (Math.random()*5),
+        }
+      )
   }
-  setInterval(spawn,1200)
+  setInterval(spawn, 1000)
   setInterval(tick, 1000/60)
 
+  function gameover(){
+    state.isPlaying = false
+    state.timer = TIMER
+    state.hiscore = Math.max(state.hiscore,state.score)
+    state.score = 0
+    state.ghosts = []
+    state.bullets = []
+
+    localStorage.setItem("hiscore", state.hiscore)
+
+    // first ghost for next game
+    spawn()
+  }
+
   spawn()
+  state.hiscore = localStorage.getItem("hiscore") || 0
 }
