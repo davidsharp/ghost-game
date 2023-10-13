@@ -134,7 +134,12 @@ export default function main(canvas){
   }
   requestAnimationFrame(draw);
 
-  canvas.addEventListener('mousedown', function(event) {
+  canvas.addEventListener('click', shoot, false);
+  canvas.addEventListener('touchstart', ev => {
+    ev.preventDefault()
+    shoot(ev)
+  })
+  function shoot(event) {
     if(!state.isPlaying){
       if(!state.disabledClick)reset()
       return
@@ -159,8 +164,7 @@ export default function main(canvas){
         state.hits++
       }
     });
-
-}, false);
+  }
 
   function spawn(){
     if(state.isPlaying)
