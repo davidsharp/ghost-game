@@ -12,6 +12,9 @@ export default function main(canvas){
     ghosts: [
       //{x:400,y:300}
     ],
+    bullets: [
+      {x:400,y:300,tick:5}
+    ]
   }
 
   window.state=state
@@ -33,6 +36,9 @@ export default function main(canvas){
       if (g.y < 0) g.dead = true //g.y = 800
     })
     state.ghosts = state.ghosts.filter(g=>!g.dead)
+
+    state.bullets.forEach(b=>b.tick--)
+    state.bullets = state.bullets.filter(b=>b.tick>0)
   }
   function draw() {
     tick()
@@ -46,6 +52,15 @@ export default function main(canvas){
       }
     )
 
+    state.bullets.forEach(
+      bullet => {
+        ctx.fillStyle = 'yellow'
+        ctx.beginPath();
+        ctx.arc(bullet.x, bullet.y, bullet.tick * 5, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+    )
+
     requestAnimationFrame(draw);
   }
   requestAnimationFrame(draw);
@@ -56,6 +71,8 @@ export default function main(canvas){
         y = event.pageY - rect.top;
 
         console.log(x,y)
+
+    state.bullets.push({x,y,tick:5})
 
     // Collision detection between clicked offset and element.
     state.ghosts.forEach(ghost => {
