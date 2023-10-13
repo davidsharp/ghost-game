@@ -48,13 +48,26 @@ export default function main(canvas){
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
 
     if(!state.isPlaying){
-      // handle menu stuff here
       let txt = 'High Score: '+state.hiscore
       let x = (WIDTH/2) - (ctx.measureText(txt).width/2)
+      ctx.fillStyle = 'black'
+      ctx.fillText(txt,x+5,230+5)
+      ctx.fillStyle = 'white'
+      ctx.fillText(txt,x,230)
+
+      txt = 'Score: '+state.score
+      x = (WIDTH/2) - (ctx.measureText(txt).width/2)
       ctx.fillStyle = 'black'
       ctx.fillText(txt,x+5,300+5)
       ctx.fillStyle = 'white'
       ctx.fillText(txt,x,300)
+
+      txt = 'Accuracy: '+Math.floor((state.hits/state.shots)*100)
+      x = (WIDTH/2) - (ctx.measureText(txt).width/2)
+      ctx.fillStyle = 'black'
+      ctx.fillText(txt,x+5,370+5)
+      ctx.fillStyle = 'white'
+      ctx.fillText(txt,x,370)
     }
 
     else{
@@ -79,10 +92,15 @@ export default function main(canvas){
       ctx.fillStyle = 'white'
       ctx.fillText(txt,20,600 - 50)
   
-      ctx.fillStyle = state.timer > (TIMER/5) ? 'white' : 'red'
+      ctx.fillStyle = '#44444488'
       ctx.beginPath();
-      ctx.arc(800-100, 100, 50, (2 * Math.PI-(2 * Math.PI * Math.max(0.1,state.timer))/TIMER)-Math.PI/2, 0-(Math.PI/2));
-      ctx.lineTo(800-100, 100)
+      ctx.arc(800-80, 80, 44, 0, 2 * Math.PI);
+      ctx.lineTo(800-80, 80)
+      ctx.fill();
+      ctx.fillStyle = state.timer > (TIMER/4) ? 'white' : `rgb(255,${255*(state.timer/(TIMER/4))},${255*(state.timer/(TIMER/4))})`
+      ctx.beginPath();
+      ctx.arc(800-80, 80, 40, (2 * Math.PI-(2 * Math.PI * Math.max(0.1,state.timer))/TIMER)-Math.PI/2, 0-(Math.PI/2));
+      ctx.lineTo(800-80, 80)
       ctx.fill();
     }
 
@@ -93,12 +111,14 @@ export default function main(canvas){
   canvas.addEventListener('click', function(event) {
     if(!state.isPlaying){
       // handle menu stuff here
-      state.isPlaying = true
+      reset()
       return
     }
     var rect = canvas.getBoundingClientRect();
     var x = event.pageX - rect.left,
         y = event.pageY - rect.top;
+
+    state.shots++
 
     state.bullets.push({x,y,tick:5})
 
@@ -111,6 +131,7 @@ export default function main(canvas){
       if (dist<40) {
         ghost.dead = true
         state.score++
+        state.hits++
       }
     });
 
@@ -134,16 +155,23 @@ export default function main(canvas){
 
   function gameover(){
     state.isPlaying = false
-    state.timer = TIMER
     state.hiscore = Math.max(state.hiscore,state.score)
+
+    localStorage.setItem("hiscore", state.hiscore)
+  }
+
+  function reset(){
+    state.timer = TIMER
     state.score = 0
     state.ghosts = []
     state.bullets = []
-
-    localStorage.setItem("hiscore", state.hiscore)
+    state.hits = 0
+    state.shots = 0
 
     // first ghost for next game
     spawn()
+
+    state.isPlaying = true
   }
 
   spawn()
