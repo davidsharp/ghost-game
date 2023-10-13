@@ -53,36 +53,36 @@ export default function main(canvas){
       ctx.fillText(txt,x+5,300+5)
       ctx.fillStyle = 'white'
       ctx.fillText(txt,x,300)
-
-      requestAnimationFrame(draw);
     }
 
-    state.ghosts.forEach(
-      ghost => {
-        ctx.fillText(GHOST,ghost.x-(GHOST_WIDTH/2),ghost.y + 30)
-      }
-    )
-
-    state.bullets.forEach(
-      bullet => {
-        ctx.fillStyle = 'yellow'
-        ctx.beginPath();
-        ctx.arc(bullet.x, bullet.y, bullet.tick * 7, 0, 2 * Math.PI);
-        ctx.fill();
-      }
-    )
-
-    let txt = 'Score: '+state.score
-    ctx.fillStyle = 'black'
-    ctx.fillText(txt,20 + 5,600 - 45)
-    ctx.fillStyle = 'white'
-    ctx.fillText(txt,20,600 - 50)
-
-    ctx.fillStyle = state.timer > (TIMER/5) ? 'white' : 'red'
-    ctx.beginPath();
-    ctx.arc(800-100, 100, 50, (2 * Math.PI-(2 * Math.PI * Math.max(0.1,state.timer))/TIMER)-Math.PI/2, 0-(Math.PI/2));
-    ctx.lineTo(800-100, 100)
-    ctx.fill();
+    else{
+      state.ghosts.forEach(
+        ghost => {
+          ctx.fillText(GHOST,ghost.x-(GHOST_WIDTH/2),ghost.y + 30)
+        }
+      )
+  
+      state.bullets.forEach(
+        bullet => {
+          ctx.fillStyle = 'yellow'
+          ctx.beginPath();
+          ctx.arc(bullet.x, bullet.y, bullet.tick * 7, 0, 2 * Math.PI);
+          ctx.fill();
+        }
+      )
+  
+      let txt = 'Score: '+state.score
+      ctx.fillStyle = 'black'
+      ctx.fillText(txt,20 + 5,600 - 45)
+      ctx.fillStyle = 'white'
+      ctx.fillText(txt,20,600 - 50)
+  
+      ctx.fillStyle = state.timer > (TIMER/5) ? 'white' : 'red'
+      ctx.beginPath();
+      ctx.arc(800-100, 100, 50, (2 * Math.PI-(2 * Math.PI * Math.max(0.1,state.timer))/TIMER)-Math.PI/2, 0-(Math.PI/2));
+      ctx.lineTo(800-100, 100)
+      ctx.fill();
+    }
 
     requestAnimationFrame(draw);
   }
