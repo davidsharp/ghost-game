@@ -13,8 +13,9 @@ export default function main(canvas){
       //{x:400,y:300}
     ],
     bullets: [
-      {x:400,y:300,tick:5}
-    ]
+      //{x:400,y:300,tick:5}
+    ],
+    mouse: {x:0,y:0}
   }
 
   window.state=state
@@ -56,14 +57,27 @@ export default function main(canvas){
       bullet => {
         ctx.fillStyle = 'yellow'
         ctx.beginPath();
-        ctx.arc(bullet.x, bullet.y, bullet.tick * 5, 0, 2 * Math.PI);
+        ctx.arc(bullet.x, bullet.y, bullet.tick * 7, 0, 2 * Math.PI);
         ctx.fill();
       }
     )
 
+    /*ctx.strokeStyle = 'yellow'
+    ctx.beginPath();
+    ctx.arc(state.mouse.x, state.mouse.y, 30, 0, 2 * Math.PI);
+    ctx.stroke();*/
+
     requestAnimationFrame(draw);
   }
   requestAnimationFrame(draw);
+
+  /*canvas.addEventListener('mousemove', function(event) {
+    var rect = canvas.getBoundingClientRect();
+    var x = event.pageX - rect.left,
+        y = event.pageY - rect.top;
+
+    state.mouse = {x,y}
+  })*/
 
   canvas.addEventListener('click', function(event) {
     var rect = canvas.getBoundingClientRect();
