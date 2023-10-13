@@ -1,0 +1,14 @@
+{
+  "name": "ghost-game",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "davidsharp <hello@davidsharp.codes>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "parcel index.html",
+    "build": "rm -rf ./dist/ && parcel build --no-source-maps --public-url ./ index.html && zip -r ./dist/ghost-game ./dist"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4"
+  }
+}
