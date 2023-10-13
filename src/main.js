@@ -9,7 +9,9 @@ export default function main(canvas){
     innerX: 5,
     innerY: 80,
     settings: {},
-    ghosts: [],
+    ghosts: [
+      //{x:400,y:300}
+    ],
   }
 
   window.state=state
@@ -40,7 +42,7 @@ export default function main(canvas){
 
     state.ghosts.forEach(
       ghost => {
-        ctx.fillText(GHOST,ghost.x-(GHOST_WIDTH/2),ghost.y - 15)
+        ctx.fillText(GHOST,ghost.x-(GHOST_WIDTH/2),ghost.y + 30)
       }
     )
 
@@ -48,10 +50,27 @@ export default function main(canvas){
   }
   requestAnimationFrame(draw);
 
-  document.addEventListener('keydown', passKey);
-  function passKey(e) {
-    state.screen?.listen(e.key)
-  }
+  canvas.addEventListener('click', function(event) {
+    var rect = canvas.getBoundingClientRect();
+    var x = event.pageX - rect.left,
+        y = event.pageY - rect.top;
+
+        console.log(x,y)
+
+    // Collision detection between clicked offset and element.
+    state.ghosts.forEach(ghost => {
+      const dist = Math.sqrt(
+        ((ghost.x-x) ** 2) +
+        ((ghost.y-y) ** 2)
+      )
+      console.log(dist)
+      if (dist<40) {
+          //alert('clicked an element');
+          ghost.dead = true
+      }
+    });
+
+}, false);
 
   function spawn(){
     state.ghosts.push(
