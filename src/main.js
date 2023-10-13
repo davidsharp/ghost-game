@@ -1,9 +1,13 @@
 const WIDTH = 800
 const HEIGHT = 600
+const TIMER = 1000
 
 export default function main(canvas){
   const state = {
+    isPlaying: true,
     score: 0,
+    hiscore: 0,
+    timer: TIMER,
     ghosts: [
       //{x:400,y:300}
     ],
@@ -24,6 +28,7 @@ export default function main(canvas){
   const GHOST_WIDTH = ctx.measureText(GHOST).width
 
   function tick() {
+    state.timer -= 0.5
     state.ghosts.forEach(g=>{
       g.y -= 2
       g.tick++
@@ -61,6 +66,12 @@ export default function main(canvas){
     ctx.fillText(txt,20 + 5,600 - 45)
     ctx.fillStyle = 'white'
     ctx.fillText(txt,20,600 - 50)
+
+    ctx.fillStyle = state.timer > (TIMER/5) ? 'white' : 'red'
+    ctx.beginPath();
+    ctx.arc(800-100, 100, 50, (2 * Math.PI-(2 * Math.PI * state.timer)/TIMER)-Math.PI/2, 0-(Math.PI/2));
+    ctx.lineTo(800-100, 100)
+    ctx.fill();
 
     requestAnimationFrame(draw);
   }
