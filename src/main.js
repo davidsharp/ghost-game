@@ -1,12 +1,14 @@
 const WIDTH = 800
 const HEIGHT = 600
-const TIMER = 1000
+const TIMER = 2000
 
 export default function main(canvas){
   const state = {
     isPlaying: true,
     score: 0,
     hiscore: 0,
+    shots: 0,
+    hits: 0,
     timer: TIMER,
     ghosts: [
       //{x:400,y:300}
@@ -34,7 +36,7 @@ export default function main(canvas){
     state.ghosts.forEach(g=>{
       g.y -= 2
       g.tick++
-      g.x += (Math.sin(g.tick/10)*3)
+      g.x += (g.dir + (Math.sin(g.tick/10)*3*g.intensity))
       if (g.y < 0) g.dead = true
     })
     state.ghosts = state.ghosts.filter(g=>!g.dead)
@@ -121,10 +123,13 @@ export default function main(canvas){
           x: (Math.random()*700)+50,
           y: 700,
           tick: (Math.random()*5),
+          speed: 0.6 + (Math.random()),
+          dir: 0.5 - (Math.random()),
+          intensity: 0.5 + Math.random(),
         }
       )
   }
-  setInterval(spawn, 1000)
+  setInterval(spawn, 800)
   setInterval(tick, 1000/60)
 
   function gameover(){
