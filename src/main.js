@@ -134,11 +134,7 @@ export default function main(canvas){
   }
   requestAnimationFrame(draw);
 
-  canvas.addEventListener('click', shoot, false);
-  canvas.addEventListener('touchstart', ev => {
-    ev.preventDefault()
-    shoot(ev)
-  })
+  canvas.addEventListener('pointerdown', shoot, false);
   function shoot(event) {
     if(!state.isPlaying){
       if(!state.disabledClick)reset()
